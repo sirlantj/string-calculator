@@ -30,6 +30,9 @@ public class StringCalculatorEngine : IStringCalculatorEngine
                 continue;
             }
 
+            if (number > 1000)
+                continue;
+
             sum += number;
         }
 

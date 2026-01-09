@@ -31,8 +31,8 @@ public class StringCalculatorTests
     [Fact]
     public void Add_TwoNumbers_ReturnsSum()
     {
-        var result = _calculator.Add("1,5000");
-        Assert.Equal(5001, result);
+        var result = _calculator.Add("1,500");
+        Assert.Equal(501, result);
     }
 
     [Fact]
@@ -148,4 +148,25 @@ public class StringCalculatorTests
         var ex = Assert.Throws<NegativeNumbersNotAllowedException>(() => _calculator.Add("1\n-2,3\n-4"));
         Assert.Equal("Negatives not allowed: -2, -4", ex.Message);
     }
+
+    [Fact]
+public void Add_NumberGreaterThan1000_IsIgnored()
+{
+    var result = _calculator.Add("2,1001,6");
+    Assert.Equal(8, result);
+}
+
+[Fact]
+public void Add_AllNumbersGreaterThan1000_ReturnsZero()
+{
+    var result = _calculator.Add("1001,2000,5000");
+    Assert.Equal(0, result);
+}
+
+[Fact]
+public void Add_MixedValidAndInvalidNumbers_IgnoresGreaterThan1000()
+{
+    var result = _calculator.Add("1,999,1000,1001,2");
+    Assert.Equal(2002, result);
+}
 }

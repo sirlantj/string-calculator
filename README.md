@@ -13,7 +13,7 @@ The goal of this project is to demonstrate:
 - Readable, testable, and extensible code
 - Proper use of Dependency Injection, even in a console application
 
-This version implements **Requirements #1, #2, #3 and #4**.
+This version implements **Requirements #1, #2, #3, #4 and #5**.
 
 ---
 
@@ -55,6 +55,14 @@ Rules:
 - Add comprehensive tests covering single and multiple negatives
 - Preserve all previous behavior (delimiters, invalid as 0, etc.)
 
+## Requirement #5 (Implemented)
+
+Rules:
+
+- Numbers > 1000 are treated as 0 (ignored in the sum)
+- All previous behavior preserved (delimiters, negatives rejection, invalid/empty as 0)
+- Added comprehensive tests for values above, at, and below the threshold
+
 Examples:
 
 ```
@@ -65,6 +73,7 @@ Examples:
 "1,2,3" -> 6
 "1\n2,3" -> 6
 "1,-2,3" -> Error: Negatives not allowed: -2
+"2,1001,6" -> 8
 ```
 
 ## Project Structure
