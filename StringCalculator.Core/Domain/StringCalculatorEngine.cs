@@ -9,12 +9,16 @@ public class StringCalculatorEngine : IStringCalculatorEngine
         if (string.IsNullOrWhiteSpace(input))
             return 0;
 
-        var parts = input.Split(',')
-                         .Select(p => p.Trim());
+        var delimiters = new[] { ',', '\n' };
+
+        var parts = input
+            .Replace("\\n", "\n")
+            .Split(delimiters, StringSplitOptions.None);
+
         int sum = 0;
         foreach (var part in parts)
         {
-            sum += int.TryParse(part, out var number) ? number : 0;
+            sum += int.TryParse(part.Trim(), out var number) ? number : 0;
         }
 
         return sum;

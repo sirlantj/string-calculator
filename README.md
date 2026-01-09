@@ -13,7 +13,7 @@ The goal of this project is to demonstrate:
 - Readable, testable, and extensible code
 - Proper use of Dependency Injection, even in a console application
 
-This version implements **Requirements #1 and #2**.
+This version implements **Requirements #1, #2 and #3**.
 
 ---
 
@@ -37,6 +37,15 @@ Rules:
 - Add new tests for multiple numbers
 - Keep all previous behavior (empty/invalid as 0, trim, etc.)
 
+## Requirement #3 (Implemented)
+
+Rules:
+
+- Add support for '\n' as alternative delimiter alongside ','
+- Split using both delimiters with StringSplitOptions.RemoveEmptyEntries
+- Preserve all previous behavior (unlimited numbers, invalid/empty as 0, trim)
+- Add comprehensive tests for newline and mixed delimiter scenarios
+
 Examples:
 
 ```
@@ -44,7 +53,8 @@ Examples:
 "1,5000" -> 5001
 "4,-3" -> 1
 "5,abc" -> 5
-"1,2,3" -> Exception
+"1,2,3" -> 6
+"1\n2,3" -> 6
 ```
 
 ## Project Structure

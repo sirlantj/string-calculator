@@ -3,14 +3,14 @@ using StringCalculator.Core.Contracts;
 using StringCalculator.Core.Domain;
 
 var services = new ServiceCollection();
-
-services.AddScoped<IStringCalculatorEngine, StringCalculatorEngine>();
+services.AddSingleton<IStringCalculatorEngine, StringCalculatorEngine>();
 
 var provider = services.BuildServiceProvider();
 var calculator = provider.GetRequiredService<IStringCalculatorEngine>();
 
-Console.WriteLine("String Calculator - Req #1");
-Console.WriteLine("Enter values (comma separated):");
+Console.WriteLine("String Calculator");
+Console.WriteLine(@"Enter values using ',' or '\n' as delimiters.");
+Console.WriteLine("Empty line exits.\n");
 
 while (true)
 {
