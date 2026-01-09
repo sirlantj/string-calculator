@@ -237,4 +237,35 @@ public class StringCalculatorTests
         Assert.Equal(0, result);
     }
 
+    [Fact]
+    public void Add_MultipleDelimitersOfAnyLength_ReturnsSum()
+    {
+        var result = _calculator.Add("//[*][!!][r9r]\n11r9r22*hh*33!!44");
+        Assert.Equal(110, result);
+    }
+
+    [Fact]
+    public void Add_MultipleDelimiters_CoexistsWithCommaAndNewline()
+    {
+        var result = _calculator.Add("//[***][#]\n1***2#3\n4,5");
+        Assert.Equal(15, result);
+    }
+
+    [Fact]
+    public void Add_MultipleDelimiters_ThrowsOnNegativeNumbers()
+    {
+        var exception = Assert.Throws<NegativeNumbersNotAllowedException>(() =>
+            _calculator.Add("//[*][!!]\n1*-2!!-3"));
+
+        Assert.Contains("-2", exception.Message);
+        Assert.Contains("-3", exception.Message);
+    }
+
+    [Fact]
+    public void Add_MultipleDelimiters_IgnoresValuesGreaterThan1000()
+    {
+        var result = _calculator.Add("//[***][%%]\n2***1001%%6");
+        Assert.Equal(8, result);
+    }
+
 }

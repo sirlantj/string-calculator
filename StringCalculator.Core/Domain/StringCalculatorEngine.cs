@@ -1,5 +1,6 @@
 using StringCalculator.Core.Contracts;
 using StringCalculator.Core.Exceptions;
+using System.Text.RegularExpressions;
 
 namespace StringCalculator.Core.Domain;
 
@@ -12,7 +13,7 @@ public class StringCalculatorEngine : IStringCalculatorEngine
 
         var (delimiters, numbersPart) = ParseDelimiters(input);
 
-        var parts = numbersPart.Split(delimiters, StringSplitOptions.None);
+        var parts = SplitNumbers(numbersPart, delimiters);
 
         var sum = 0;
         var negatives = new List<int>();
@@ -40,30 +41,37 @@ public class StringCalculatorEngine : IStringCalculatorEngine
         return sum;
     }
 
-    private static (string[] delimiters, string numbers) ParseDelimiters(string input)
+    private static (List<string> delimiters, string numbers) ParseDelimiters(string input)
     {
         var delimiters = new List<string> { ",", "\n" };
 
         if (!input.StartsWith("//"))
-            return (delimiters.ToArray(), input);
+            return (delimiters, input);
 
         var newlineIndex = input.IndexOf('\n');
-
         if (newlineIndex == -1)
-            return (delimiters.ToArray(), input);
+            return (delimiters, input);
 
-        var header = input.Substring(2, newlineIndex - 2);
+        var delimiterSection = input.Substring(2, newlineIndex - 2);
         var numbers = input[(newlineIndex + 1)..];
 
-        if (header.StartsWith("[") && header.EndsWith("]"))
+        var matches = Regex.Matches(delimiterSection, @"\[(.*?)\]");
+        if (matches.Count > 0)
         {
-            delimiters.Add(header.Substring(1, header.Length - 2));
+            foreach (Match match in matches)
+                delimiters.Add(match.Groups[1].Value);
         }
         else
         {
-            delimiters.Add(header);
+            delimiters.Add(delimiterSection);
         }
 
-        return (delimiters.ToArray(), numbers);
+        return (delimiters, numbers);
+    }
+
+    private static IEnumerable<string> SplitNumbers(string input, List<string> delimiters)
+    {
+        var pattern = string.Join("|", delimiters.Select(Regex.Escape));
+        return Regex.Split(input, pattern);
     }
 }

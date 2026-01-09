@@ -13,7 +13,7 @@ The goal of this project is to demonstrate:
 - Readable, testable, and extensible code
 - Proper use of Dependency Injection, even in a console application
 
-This version implements **Requirements #1, #2, #3, #4, #5 #6 and #7**.
+This version implements **Requirements #1, #2, #3, #4, #5 #6, #7 and #8**.
 
 ---
 
@@ -81,6 +81,15 @@ Rules:
 - Maintain compatibility with previous formats
 - Added relevant tests
 
+## Requirement #8 (Implemented)
+
+Rules:
+
+- Full support for //[{delim1}][{delim2}]...\n{numbers} format
+- Multiple delimiters of any length parsed via regex
+- Added comprehensive tests for multiple delimiters and edge cases
+- All previous requirements preserved
+
 Examples:
 
 ```
@@ -94,6 +103,7 @@ Examples:
 "2,1001,6" -> 8
 "1\n2,3" -> 6
 "//[***]\n11***22***33" -> 66
+"//[*][!!][r9r]\n11r9r22*hh*33!!44" → 110
 ```
 
 ## Project Structure
