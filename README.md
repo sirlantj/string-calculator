@@ -108,7 +108,7 @@ Examples:
 
 ## Stretch goals
 
-This version implements **Stretch #1**.
+This version implements **Stretch #1 and #2**.
 
 ## Stretch #1 (Implemented)
 
@@ -119,6 +119,14 @@ Rules:
 - Example: "2,,4,rrrr,1001,6" → "2 + 0 + 4 + 0 + 6 = 12"
 - Introduced CalculationResult value object for rich return type
 - All previous requirements preserved
+
+## Stretch #2 (Implemented)
+
+Rules:
+
+- Application now runs until Ctrl+C is pressed
+- Empty lines are processed (return 0) instead of exiting
+- Graceful shutdown with farewell message
 
 ## Project Structure
 
