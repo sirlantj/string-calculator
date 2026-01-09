@@ -1,4 +1,3 @@
-using StringCalculator.Core.Exceptions;
 using StringCalculator.Core.Contracts;
 
 namespace StringCalculator.Core.Domain;
@@ -12,10 +11,6 @@ public class StringCalculatorEngine : IStringCalculatorEngine
 
         var parts = input.Split(',')
                          .Select(p => p.Trim());
-
-        if (parts.Count() > 2)
-            throw new TooManyNumbersException(parts.Count());
-
         int sum = 0;
         foreach (var part in parts)
         {

@@ -1,5 +1,4 @@
 using StringCalculator.Core.Domain;
-using StringCalculator.Core.Exceptions;
 
 namespace StringCalculator.Tests;
 
@@ -36,10 +35,24 @@ public class StringCalculatorTests
     }
 
     [Fact]
+    public void Add_MultipleNumbers_ReturnsSum()
+    {
+        var result = _calculator.Add("1,2,3,4,5");
+        Assert.Equal(15, result);
+    }
+
+    [Fact]
+    public void Add_MultipleNumbers_WithInvalidValues_IgnoresInvalids()
+    {
+        var result = _calculator.Add("1,abc,3,xyz,5");
+        Assert.Equal(9, result);
+    }
+
+    [Fact]
     public void Add_NegativeNumbers_AreAllowedInThisStep()
     {
-        var result = _calculator.Add("4,-3");
-        Assert.Equal(1, result);
+        var result = _calculator.Add("4,-3,-1");
+        Assert.Equal(0, result);
     }
 
     [Fact]
@@ -67,42 +80,23 @@ public class StringCalculatorTests
     }
 
     [Fact]
-    public void Add_TwoEmptyParts_ReturnsZero()
+    public void Add_MultipleEmptyParts_AreTreatedAsZero()
     {
-        var result = _calculator.Add(",");
+        var result = _calculator.Add(",,");
         Assert.Equal(0, result);
+    }
+
+    [Fact]
+    public void Add_MixedEmptyAndValidParts_ReturnsCorrectSum()
+    {
+        var result = _calculator.Add("1,,2,,,3");
+        Assert.Equal(6, result);
     }
 
     [Fact]
     public void Add_WhitespaceAroundNumbers_IsIgnored()
     {
-        var result = _calculator.Add("  4  ,  -2 ");
-        Assert.Equal(2, result);
-    }
-
-    [Fact]
-    public void Add_MoreThanTwoNumbers_ThrowsTooManyNumbersException()
-    {
-        Assert.Throws<TooManyNumbersException>(() => _calculator.Add("1,2,3"));
-        Assert.Throws<TooManyNumbersException>(() => _calculator.Add("10,20,30,40"));
-    }
-
-    [Fact]
-    public void Add_ThreeOrMoreParts_EvenWithEmpties_ThrowsException()
-    {
-        Assert.Throws<TooManyNumbersException>(() => _calculator.Add("1,,3"));
-        Assert.Throws<TooManyNumbersException>(() => _calculator.Add(",,"));
-        Assert.Throws<TooManyNumbersException>(() => _calculator.Add("1,2,"));
-        Assert.Throws<TooManyNumbersException>(() => _calculator.Add(",1,2"));
-    }
-
-    [Fact]
-    public void Add_MoreThanTwoNumbers_ThrowsException_WithCorrectDetails()
-    {
-        var exception = Assert.Throws<TooManyNumbersException>(() =>
-            _calculator.Add("1,2,3,4,5"));
-
-        Assert.Contains("5 provided", exception.Message);
-        Assert.Contains("maximum of 2 allowed", exception.Message);
+        var result = _calculator.Add("  4  ,  -2 ,  3 ");
+        Assert.Equal(5, result);
     }
 }

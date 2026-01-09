@@ -13,7 +13,7 @@ The goal of this project is to demonstrate:
 - Readable, testable, and extensible code
 - Proper use of Dependency Injection, even in a console application
 
-This version implements **Requirement #1 only**.
+This version implements **Requirements #1 and #2**.
 
 ---
 
@@ -26,6 +26,16 @@ Rules:
 - Empty or missing numbers are treated as `0`
 - Invalid numbers are treated as `0`
 - Throws an exception when more than two numbers are provided
+
+## Requirement #2 (Implemented)
+
+Rules:
+
+- Remove limit of 2 numbers
+- Remove TooManyNumbersException (no longer needed)
+- Update engine to handle any number of parts
+- Add new tests for multiple numbers
+- Keep all previous behavior (empty/invalid as 0, trim, etc.)
 
 Examples:
 
