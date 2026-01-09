@@ -1,4 +1,5 @@
 using StringCalculator.Core.Contracts;
+using StringCalculator.Core.Exceptions;
 
 namespace StringCalculator.Core.Domain;
 
@@ -14,12 +15,26 @@ public class StringCalculatorEngine : IStringCalculatorEngine
         var parts = input
             .Replace("\\n", "\n")
             .Split(delimiters, StringSplitOptions.None);
+        
+        var negatives = new List<int>();
 
         int sum = 0;
         foreach (var part in parts)
         {
-            sum += int.TryParse(part.Trim(), out var number) ? number : 0;
+            if (!int.TryParse(part.Trim(), out var number))
+                continue;
+
+            if (number < 0)
+            {
+                negatives.Add(number);
+                continue;
+            }
+
+            sum += number;
         }
+
+        if (negatives.Any())
+            throw new NegativeNumbersNotAllowedException(negatives);
 
         return sum;
     }

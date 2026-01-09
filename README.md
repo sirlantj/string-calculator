@@ -13,7 +13,7 @@ The goal of this project is to demonstrate:
 - Readable, testable, and extensible code
 - Proper use of Dependency Injection, even in a console application
 
-This version implements **Requirements #1, #2 and #3**.
+This version implements **Requirements #1, #2, #3 and #4**.
 
 ---
 
@@ -46,6 +46,15 @@ Rules:
 - Preserve all previous behavior (unlimited numbers, invalid/empty as 0, trim)
 - Add comprehensive tests for newline and mixed delimiter scenarios
 
+## Requirement #4 (Implemented)
+
+Rules:
+
+- Throw NegativeNumbersNotAllowedException when negative numbers are present
+- Exception message lists all negative numbers found
+- Add comprehensive tests covering single and multiple negatives
+- Preserve all previous behavior (delimiters, invalid as 0, etc.)
+
 Examples:
 
 ```
@@ -55,6 +64,7 @@ Examples:
 "5,abc" -> 5
 "1,2,3" -> 6
 "1\n2,3" -> 6
+"1,-2,3" -> Error: Negatives not allowed: -2
 ```
 
 ## Project Structure
@@ -72,6 +82,8 @@ StringCalculator/
 │ │ └── IStringCalculatorEngine.cs
 │ ├── Domain/
 │ │ └── StringCalculatorEngine.cs
+  │── Exceptions/
+│ │ └── NegativeNumbersNotAllowedException.cs
 │ └── StringCalculator.Core.csproj
 │
 ├── StringCalculator.Tests/

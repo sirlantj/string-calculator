@@ -1,4 +1,5 @@
 using StringCalculator.Core.Domain;
+using StringCalculator.Core.Exceptions;
 
 namespace StringCalculator.Tests;
 
@@ -49,13 +50,6 @@ public class StringCalculatorTests
     }
 
     [Fact]
-    public void Add_NegativeNumbers_AreAllowedInThisStep()
-    {
-        var result = _calculator.Add("4,-3,-1");
-        Assert.Equal(0, result);
-    }
-
-    [Fact]
     public void Add_InvalidNumber_IsTreatedAsZero()
     {
         var result = _calculator.Add("5,tytyt");
@@ -91,13 +85,6 @@ public class StringCalculatorTests
     {
         var result = _calculator.Add("1,,2,,,3");
         Assert.Equal(6, result);
-    }
-
-    [Fact]
-    public void Add_WhitespaceAroundNumbers_IsIgnored()
-    {
-        var result = _calculator.Add("  4  ,  -2 ,  3 ");
-        Assert.Equal(5, result);
     }
 
     [Fact]
@@ -141,5 +128,24 @@ public class StringCalculatorTests
     {
         Assert.Equal(10, _calculator.Add("1\nabc,3\n\n4,tytyt\n2"));
 
+    }
+
+    [Fact]
+    public void Add_NegativeNumbers_ThrowsExceptionWithAllNegatives()
+    {
+        var calculator = new StringCalculatorEngine();
+
+        var exception = Assert.Throws<NegativeNumbersNotAllowedException>(() =>
+            calculator.Add("1,-2,3,-5"));
+
+        Assert.Contains("-2", exception.Message);
+        Assert.Contains("-5", exception.Message);
+    }
+
+    [Fact]
+    public void Add_WithNegativesAndDelimiters_StillThrowsCorrectly()
+    {
+        var ex = Assert.Throws<NegativeNumbersNotAllowedException>(() => _calculator.Add("1\n-2,3\n-4"));
+        Assert.Equal("Negatives not allowed: -2, -4", ex.Message);
     }
 }
