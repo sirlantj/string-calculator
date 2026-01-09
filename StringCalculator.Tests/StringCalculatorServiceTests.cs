@@ -150,23 +150,44 @@ public class StringCalculatorTests
     }
 
     [Fact]
-public void Add_NumberGreaterThan1000_IsIgnored()
-{
-    var result = _calculator.Add("2,1001,6");
-    Assert.Equal(8, result);
-}
+    public void Add_NumberGreaterThan1000_IsIgnored()
+    {
+        var result = _calculator.Add("2,1001,6");
+        Assert.Equal(8, result);
+    }
 
-[Fact]
-public void Add_AllNumbersGreaterThan1000_ReturnsZero()
-{
-    var result = _calculator.Add("1001,2000,5000");
-    Assert.Equal(0, result);
-}
+    [Fact]
+    public void Add_AllNumbersGreaterThan1000_ReturnsZero()
+    {
+        var result = _calculator.Add("1001,2000,5000");
+        Assert.Equal(0, result);
+    }
 
-[Fact]
-public void Add_MixedValidAndInvalidNumbers_IgnoresGreaterThan1000()
-{
-    var result = _calculator.Add("1,999,1000,1001,2");
-    Assert.Equal(2002, result);
-}
+    [Fact]
+    public void Add_MixedValidAndInvalidNumbers_IgnoresGreaterThan1000()
+    {
+        var result = _calculator.Add("1,999,1000,1001,2");
+        Assert.Equal(2002, result);
+    }
+
+    [Fact]
+    public void Add_CustomDelimiter_SingleCharacter_IsSupported()
+    {
+        var result = _calculator.Add("//#\n2#5");
+        Assert.Equal(7, result);
+    }
+
+    [Fact]
+    public void Add_CustomDelimiter_Comma_IsStillSupported()
+    {
+        var result = _calculator.Add("//,\n2,ff,100");
+        Assert.Equal(102, result);
+    }
+
+    [Fact]
+    public void Add_CustomDelimiter_WithNewlineStillWorks()
+    {
+        var result = _calculator.Add("//;\n1;2\n3");
+        Assert.Equal(6, result);
+    }
 }

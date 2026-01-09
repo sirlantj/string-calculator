@@ -21,6 +21,7 @@ while (true)
 
     try
     {
+        input = input.Replace("\\n", "\n");
         var result = calculator.Add(input);
         Console.WriteLine($"Result: {result}");
     }

@@ -10,15 +10,13 @@ public class StringCalculatorEngine : IStringCalculatorEngine
         if (string.IsNullOrWhiteSpace(input))
             return 0;
 
-        var delimiters = new[] { ',', '\n' };
+        var (delimiters, numbersPart) = ParseDelimiters(input);
 
-        var parts = input
-            .Replace("\\n", "\n")
-            .Split(delimiters, StringSplitOptions.None);
-        
+        var parts = numbersPart.Split(delimiters, StringSplitOptions.None);
+
+        var sum = 0;
         var negatives = new List<int>();
 
-        int sum = 0;
         foreach (var part in parts)
         {
             if (!int.TryParse(part.Trim(), out var number))
@@ -40,5 +38,17 @@ public class StringCalculatorEngine : IStringCalculatorEngine
             throw new NegativeNumbersNotAllowedException(negatives);
 
         return sum;
+    }
+
+    private static (char[] delimiters, string numbers) ParseDelimiters(string input)
+    {
+        if (!input.StartsWith("//"))
+            return (new[] { ',', '\n' }, input);
+
+        var newlineIndex = input.IndexOf('\n');
+        var delimiter = input[2];
+        var numbers = input[(newlineIndex + 1)..];
+
+        return (new[] { ',', '\n', delimiter }, numbers);
     }
 }

@@ -13,7 +13,7 @@ The goal of this project is to demonstrate:
 - Readable, testable, and extensible code
 - Proper use of Dependency Injection, even in a console application
 
-This version implements **Requirements #1, #2, #3, #4 and #5**.
+This version implements **Requirements #1, #2, #3, #4, #5 and #6**.
 
 ---
 
@@ -63,6 +63,15 @@ Rules:
 - All previous behavior preserved (delimiters, negatives rejection, invalid/empty as 0)
 - Added comprehensive tests for values above, at, and below the threshold
 
+## Requirement #6 (Implemented)
+
+Rules:
+
+- Parse //{delimiter}\n format
+- Support single-character custom delimiter
+- Fallback to default delimiters when not present
+- Added tests for custom and default cases
+
 Examples:
 
 ```
@@ -74,6 +83,7 @@ Examples:
 "1\n2,3" -> 6
 "1,-2,3" -> Error: Negatives not allowed: -2
 "2,1001,6" -> 8
+"1\n2,3" -> 6
 ```
 
 ## Project Structure
