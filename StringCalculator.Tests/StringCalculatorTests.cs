@@ -1,11 +1,15 @@
-using StringCalculator.Core.Domain;
 using StringCalculator.Core.Exceptions;
 
 namespace StringCalculator.Tests;
 
-public class StringCalculatorTests
+public class StringCalculatorTests : IClassFixture<StringCalculatorTestsFixture>
 {
-    private readonly StringCalculatorEngine _calculator = new();
+    private readonly StringCalculatorEngine _calculator;
+    
+    public StringCalculatorTests(StringCalculatorTestsFixture fixture)
+    {
+        _calculator = fixture.Calculator;
+    }
 
     [Fact]
     public void Add_EmptyString_ReturnsZero()
@@ -142,10 +146,8 @@ public class StringCalculatorTests
     [Fact]
     public void Add_NegativeNumbers_ThrowsExceptionWithAllNegatives()
     {
-        var calculator = new StringCalculatorEngine();
-
         var exception = Assert.Throws<NegativeNumbersNotAllowedException>(() =>
-            calculator.Add("1,-2,3,-5"));
+            _calculator.Add("1,-2,3,-5"));
 
         Assert.Contains("-2", exception.Message);
         Assert.Contains("-5", exception.Message);

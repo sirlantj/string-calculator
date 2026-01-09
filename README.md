@@ -108,7 +108,7 @@ Examples:
 
 ## Stretch goals
 
-This version implements **Stretch #1, #2 and #3**.
+This version implements **Stretch #1, #2, #3, #4 and #5**.
 
 ## Stretch #1 (Implemented)
 
@@ -157,28 +157,83 @@ dotnet run --upper-bound 2000
 dotnet run -d ";" -n -u 2000
 ```
 
+## Stretch #5 (Implemented)
+
+Rules:
+
+- Inserted others operations
+- Defaults preserve original behavior
+
+```bash
+# Sum (Default)
+> 1,2,3
+Formula: 1+2+3 = 6
+Result: 6
+
+> //[*]\n2*3*1001
+Formula: 2+3 = 5
+Result: 5
+
+# Subtraction
+> sub:10,3,2
+Formula: 10-3-2 = 5
+Result: 5
+
+# Multiplication
+> mul:2,3,4
+Formula: 2×3×4 = 24
+Result: 24
+
+> mul:2,3,1001
+Formula: 2×3 = 6
+Result: 6
+
+#Division
+> div:100,5,2
+Formula: 100÷5÷2 = 10
+Result: 10
+
+> div:20,4
+Formula: 20÷4 = 5
+Result: 5
+```
+
 ## Project Structure
 
 ```
 StringCalculator/
 │
 ├── src/
-│ ├── StringCalculator.Console/
-│ │ ├── Program.cs
-│ │ └── StringCalculator.Console.csproj
-│ │
-│ └── StringCalculator.Core/
-│ ├── Contracts/
-│ │ └── IStringCalculatorEngine.cs
-│ ├── Domain/
-│ │ └── StringCalculatorEngine.cs
-  │── Exceptions/
-│ │ └── NegativeNumbersNotAllowedException.cs
-│ └── StringCalculator.Core.csproj
+│   ├── StringCalculator.Console/
+│   │   ├── Program.cs
+│   │   └── StringCalculator.Console.csproj
+│   │
+│   └── StringCalculator.Core/
+│       ├── Contracts/
+│       │   ├── IStringCalculatorEngine.cs
+│       │   ├── IOperation.cs
+│       │   ├── IDelimiterParser.cs
+│       │   └── INumberProcessor.cs
+│       ├── Domain/
+│       │   ├── Operations/
+│       │   │   ├── AddOperation.cs
+│       │   │   ├── SubOperation.cs
+│       │   │   ├── MulOperation.cs
+│       │   │   └── DivOperation.cs
+│       │   ├── StringCalculatorEngine.cs
+│       │   ├── NumberProcessor.cs
+│       │   ├── DelimiterParser.cs
+│       │   └── ValueObjects/
+│       │       ├── CalculationResult.cs
+│       │       ├── CalculatorOptions.cs
+│       │       └── ProcessedNumbers.cs
+│       ├── Exceptions/
+│       │   └── NegativeNumbersNotAllowedException.cs
+│       └── StringCalculator.Core.csproj
 │
 ├── StringCalculator.Tests/
-│ ├── StringCalculatorTests.cs
-│ └── StringCalculator.Tests.csproj
+│   ├── StringCalculatorTests.cs
+│   └── StringCalculator.Tests.csproj
 │
 ├── .gitignore
 ├── README.md
