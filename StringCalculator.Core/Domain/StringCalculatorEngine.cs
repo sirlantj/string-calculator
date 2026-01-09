@@ -40,15 +40,30 @@ public class StringCalculatorEngine : IStringCalculatorEngine
         return sum;
     }
 
-    private static (char[] delimiters, string numbers) ParseDelimiters(string input)
+    private static (string[] delimiters, string numbers) ParseDelimiters(string input)
     {
+        var delimiters = new List<string> { ",", "\n" };
+
         if (!input.StartsWith("//"))
-            return (new[] { ',', '\n' }, input);
+            return (delimiters.ToArray(), input);
 
         var newlineIndex = input.IndexOf('\n');
-        var delimiter = input[2];
+
+        if (newlineIndex == -1)
+            return (delimiters.ToArray(), input);
+
+        var header = input.Substring(2, newlineIndex - 2);
         var numbers = input[(newlineIndex + 1)..];
 
-        return (new[] { ',', '\n', delimiter }, numbers);
+        if (header.StartsWith("[") && header.EndsWith("]"))
+        {
+            delimiters.Add(header.Substring(1, header.Length - 2));
+        }
+        else
+        {
+            delimiters.Add(header);
+        }
+
+        return (delimiters.ToArray(), numbers);
     }
 }

@@ -190,4 +190,51 @@ public class StringCalculatorTests
         var result = _calculator.Add("//;\n1;2\n3");
         Assert.Equal(6, result);
     }
+
+    [Fact]
+    public void Add_CustomDelimiterWithAnyLength_ReturnsSum()
+    {
+        var result = _calculator.Add("//[***]\n11***22***33");
+        Assert.Equal(66, result);
+    }
+
+    [Fact]
+    public void Add_CustomDelimiterWithAnyLength_AllowsN_Numbers()
+    {
+        var result = _calculator.Add("//[---]\n1---2---3---4---5");
+        Assert.Equal(15, result);
+    }
+
+    [Fact]
+    public void Add_CustomDelimiterWithAnyLength_IgnoresInvalidNumbers()
+    {
+        var result = _calculator.Add("//[***]\n2***ff***100");
+        Assert.Equal(102, result);
+    }
+
+    [Fact]
+    public void Add_CustomDelimiterWithAnyLength_SupportsCommaAndNewline()
+    {
+        var result = _calculator.Add("//[***]\n1***2\n3,4");
+        Assert.Equal(10, result);
+    }
+
+    [Fact]
+    public void Add_CustomDelimiterWithAnyLength_ThrowsOnNegativeNumbers()
+    {
+        var exception = Assert.Throws<NegativeNumbersNotAllowedException>(() =>
+            _calculator.Add("//[***]\n1***-2***-5"));
+
+        Assert.Contains("-2", exception.Message);
+        Assert.Contains("-5", exception.Message);
+    }
+
+    [Fact]
+    public void Add_CustomDelimiterFormat_Malformed_NoNewline_FallsBackToDefault()
+    {
+        var result = _calculator.Add("//[***]1***2***3");
+
+        Assert.Equal(0, result);
+    }
+
 }
