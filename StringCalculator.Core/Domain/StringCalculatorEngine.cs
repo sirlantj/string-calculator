@@ -1,4 +1,5 @@
 using StringCalculator.Core.Contracts;
+using StringCalculator.Core.Domain.ValueObjects;
 using StringCalculator.Core.Exceptions;
 using System.Text.RegularExpressions;
 
@@ -6,22 +7,25 @@ namespace StringCalculator.Core.Domain;
 
 public class StringCalculatorEngine : IStringCalculatorEngine
 {
-    public int Add(string input)
+    public CalculationResult Add(string input)
     {
         if (string.IsNullOrWhiteSpace(input))
-            return 0;
+            return new CalculationResult(0, "0 = 0");
 
         var (delimiters, numbersPart) = ParseDelimiters(input);
 
         var parts = SplitNumbers(numbersPart, delimiters);
 
-        var sum = 0;
+         var usedValues = new List<int>();
         var negatives = new List<int>();
 
         foreach (var part in parts)
         {
             if (!int.TryParse(part.Trim(), out var number))
+            {
+                usedValues.Add(0);
                 continue;
+            }
 
             if (number < 0)
             {
@@ -32,13 +36,16 @@ public class StringCalculatorEngine : IStringCalculatorEngine
             if (number > 1000)
                 continue;
 
-            sum += number;
+            usedValues.Add(number);
         }
 
         if (negatives.Any())
             throw new NegativeNumbersNotAllowedException(negatives);
 
-        return sum;
+        var sum = usedValues.Sum();
+        var formula = string.Join("+", usedValues) + $" = {sum}";
+
+        return new CalculationResult(sum, formula);
     }
 
     private static (List<string> delimiters, string numbers) ParseDelimiters(string input)

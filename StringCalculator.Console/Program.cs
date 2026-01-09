@@ -23,7 +23,8 @@ while (true)
     {
         input = input.Replace("\\n", "\n");
         var result = calculator.Add(input);
-        Console.WriteLine($"Result: {result}");
+        Console.WriteLine($"Formula: {result.Formula}");
+        Console.WriteLine($"Result: {result.Result}");
     }
     catch (Exception ex)
     {

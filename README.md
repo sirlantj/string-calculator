@@ -106,6 +106,20 @@ Examples:
 "//[*][!!][r9r]\n11r9r22*hh*33!!44" → 110
 ```
 
+## Stretch goals
+
+This version implements **Stretch #1**.
+
+## Stretch #1 (Implemented)
+
+Rules:
+
+- Return CalculationResult with sum and human-readable formula
+- Formula includes only values used in the sum (invalid/empty as 0, negatives excluded, >1000 ignored)
+- Example: "2,,4,rrrr,1001,6" → "2 + 0 + 4 + 0 + 6 = 12"
+- Introduced CalculationResult value object for rich return type
+- All previous requirements preserved
+
 ## Project Structure
 
 ```
