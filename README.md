@@ -108,7 +108,7 @@ Examples:
 
 ## Stretch goals
 
-This version implements **Stretch #1 and #2**.
+This version implements **Stretch #1, #2 and #3**.
 
 ## Stretch #1 (Implemented)
 
@@ -127,6 +127,35 @@ Rules:
 - Application now runs until Ctrl+C is pressed
 - Empty lines are processed (return 0) instead of exiting
 - Graceful shutdown with farewell message
+
+## Stretch #3 (Implemented)
+
+Rules:
+
+- Add CalculatorOptions for runtime configuration
+- Support:
+  --delimiter (-d): change alternate delimiter
+  --allow-negatives (-n): toggle negative rejection
+  --upper-bound (-u): change maximum value threshold
+- Defaults preserve original behavior
+- Configuration parsed in console layer (Clean Architecture preserved)
+
+```bash
+# Default
+dotnet run
+
+# Alternate delimiter ';'
+dotnet run --delimiter ";"
+
+# Allow negatives
+dotnet run --allow-negatives
+
+# Limit 2000
+dotnet run --upper-bound 2000
+
+# All
+dotnet run -d ";" -n -u 2000
+```
 
 ## Project Structure
 

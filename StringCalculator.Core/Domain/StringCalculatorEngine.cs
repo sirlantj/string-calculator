@@ -7,16 +7,30 @@ namespace StringCalculator.Core.Domain;
 
 public class StringCalculatorEngine : IStringCalculatorEngine
 {
-    public CalculationResult Add(string input)
+    public CalculationResult Add(string input, CalculatorOptions? options = null)
     {
-        if (string.IsNullOrWhiteSpace(input))
-            return new CalculationResult(0, "0 = 0");
+        options ??= new CalculatorOptions();
 
-        var (delimiters, numbersPart) = ParseDelimiters(input);
+    if (string.IsNullOrWhiteSpace(input))
+        return new CalculationResult(0, "0 = 0");
 
-        var parts = SplitNumbers(numbersPart, delimiters);
+    var (delimiters, numbersPart) = ParseDelimiters(input);
 
-         var usedValues = new List<int>();
+    var allDelimiters = new List<string> { "," };
+    if (options.AlternateDelimiter.HasValue)
+    {
+        allDelimiters.Add(options.AlternateDelimiter.Value.ToString());
+    }
+    else
+    {
+        allDelimiters.Add("\n"); 
+    }
+
+    allDelimiters.AddRange(delimiters.Skip(1)); 
+
+    var parts = SplitNumbers(numbersPart, allDelimiters);
+
+        var usedValues = new List<int>();
         var negatives = new List<int>();
 
         foreach (var part in parts)
@@ -30,24 +44,24 @@ public class StringCalculatorEngine : IStringCalculatorEngine
             if (number < 0)
             {
                 negatives.Add(number);
-                continue;
+                if (options.DenyNegatives)
+                    continue; 
             }
 
-            if (number > 1000)
+            if (number > options.UpperBound)
                 continue;
 
             usedValues.Add(number);
         }
 
-        if (negatives.Any())
+        if (options.DenyNegatives && negatives.Any())
             throw new NegativeNumbersNotAllowedException(negatives);
 
         var sum = usedValues.Sum();
-        var formula = string.Join("+", usedValues) + $" = {sum}";
+        var formula = string.Join("+", usedValues) + (usedValues.Any() ? $" = {sum}" : " = 0");
 
         return new CalculationResult(sum, formula);
     }
-
     private static (List<string> delimiters, string numbers) ParseDelimiters(string input)
     {
         var delimiters = new List<string> { ",", "\n" };

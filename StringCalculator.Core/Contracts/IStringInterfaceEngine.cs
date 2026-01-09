@@ -4,5 +4,5 @@ namespace StringCalculator.Core.Contracts;
 
 public interface IStringCalculatorEngine
 {
-    CalculationResult Add(string input);
+    CalculationResult Add(string input, CalculatorOptions? options = null);
 }
