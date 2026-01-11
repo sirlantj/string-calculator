@@ -2,11 +2,17 @@
 using StringCalculator.Core.Contracts;
 using StringCalculator.Core.Domain.ValueObjects;
 using StringCalculator.Core.Domain.Operations;
+using StringCalculator.Core.Domain;
+using StringCalculator.Core.Infrastructure.Parsing;
+using StringCalculator.Core.Infrastructure.Numbers;
 
 var services = new ServiceCollection();
-services.AddSingleton<IDelimiterParser, DelimiterParser>();
-services.AddSingleton<INumberProcessor, NumberProcessor>();
+services.AddSingleton<IDefaultDelimiterProvider, DefaultDelimiterProvider>();
 services.AddSingleton<IStringCalculatorEngine, StringCalculatorEngine>();
+services.AddSingleton<IDelimiterParser, DelimiterParser>();
+services.AddSingleton<INumberParser, IntNumberParser>();
+services.AddSingleton<INumberValidator, NegativeNumberValidator>();
+services.AddSingleton<INumberInclusionPolicy, UpperBoundPolicy>();
 
 var provider = services.BuildServiceProvider();
 var calculator = provider.GetRequiredService<IStringCalculatorEngine>();

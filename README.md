@@ -203,37 +203,53 @@ Result: 5
 ```
 StringCalculator/
 │
-├── src/
-│   ├── StringCalculator.Console/
-│   │   ├── Program.cs
-│   │   └── StringCalculator.Console.csproj
+├── StringCalculator.Console/
+│   ├── Program.cs
+│   └── StringCalculator.Console.csproj
+│
+├── StringCalculator.Core/
+│   ├── Contracts/
+│   │   ├── IDefaultDelimiterProvider.cs
+│   │   ├── IDelimiterParser.cs
+│   │   ├── INumberInclusionPolicy.cs
+│   │   ├── INumberParser.cs
+│   │   ├── INumberValidator.cs
+│   │   ├── IOperation.cs
+│   │   └── IStringCalculatorEngine.cs
 │   │
-│   └── StringCalculator.Core/
-│       ├── Contracts/
-│       │   ├── IStringCalculatorEngine.cs
-│       │   ├── IOperation.cs
-│       │   ├── IDelimiterParser.cs
-│       │   └── INumberProcessor.cs
-│       ├── Domain/
-│       │   ├── Operations/
-│       │   │   ├── AddOperation.cs
-│       │   │   ├── SubOperation.cs
-│       │   │   ├── MulOperation.cs
-│       │   │   └── DivOperation.cs
-│       │   ├── StringCalculatorEngine.cs
-│       │   ├── NumberProcessor.cs
-│       │   ├── DelimiterParser.cs
-│       │   └── ValueObjects/
-│       │       ├── CalculationResult.cs
-│       │       ├── CalculatorOptions.cs
-│       │       └── ProcessedNumbers.cs
-│       ├── Exceptions/
-│       │   └── NegativeNumbersNotAllowedException.cs
-│       └── StringCalculator.Core.csproj
+│   ├── Domain/
+│   │   ├── Operations/
+│   │   │   ├── AddOperation.cs
+│   │   │   ├── DivOperation.cs
+│   │   │   ├── MulOperation.cs
+│   │   │   └── SubOperation.cs
+│   │   ├── ValueObjects/
+│   │   │   ├── CalculationResult.cs
+│   │   │   └── CalculatorOptions.cs
+│   │   ├── DelimiterParser.cs
+│   │   └── StringCalculatorEngine.cs
+│   │
+│   ├── Exceptions/
+│   │   └── NegativeNumbersNotAllowedException.cs
+│   │
+│   ├── Infrastructure/
+│   │   ├── Numbers/
+│   │   │   ├── IntNumberParser.cs
+│   │   │   ├── NegativeNumberValidator.cs
+│   │   │   └── UpperBoundPolicy.cs
+│   │   └── Parsing/
+│   │       └── DefaultDelimiterProvider.cs
+│   │
+│   └── StringCalculator.Core.csproj
 │
 ├── StringCalculator.Tests/
+│   ├── GlobalUsings.cs
+│   ├── StringCalculator.Tests.csproj
+│   ├── StringCalculatorIntegrationTests.cs
+│   ├── StringCalculatorOperationsTests.cs
+│   ├── StringCalculatorOptionsTests.cs
 │   ├── StringCalculatorTests.cs
-│   └── StringCalculator.Tests.csproj
+│   └── StringCalculatorTestsFixture.cs
 │
 ├── .gitignore
 ├── README.md
@@ -277,16 +293,51 @@ dotnet test
 
 ## Architecture Decisions
 
-- **Console Application**  
-  Used to keep the focus on business logic.
+### Core Project (Domain-Centric)
 
-- **Core Project**  
-  Contains all domain rules and contracts.  
-  Can be reused by:
+The `StringCalculator.Core` project contains all **business rules, contracts, and domain logic**, with no dependency on external frameworks.
 
-  - Console applications
-  - Web APIs
-  - Background services
+This makes the core reusable by:
 
-- **Dependency Injection**  
-  Even in a console app, DI is used to keep the code loosely coupled and testable.
+- Console applications
+- Web APIs
+- Background services
+- Any other .NET host
+
+---
+
+### Clean Architecture & SOLID Principles
+
+The solution follows Clean Architecture concepts and applies SOLID principles:
+
+- **SRP (Single Responsibility Principle)**  
+  Each class has a single, well-defined responsibility (parsing, validation, inclusion rules, operations).
+
+- **OCP (Open/Closed Principle)**  
+  New operations, delimiters, validation rules, or inclusion policies can be added **without modifying existing code**, only by introducing new implementations.
+
+- **DIP (Dependency Inversion Principle)**  
+  The core depends only on abstractions (`interfaces`), never on concrete implementations.
+
+- **DRY (Don’t Repeat Yourself)**  
+  All rules are centralized and reused across the engine and tests.
+
+---
+
+### Dependency Injection
+
+Even though this is a console application, Dependency Injection is used to:
+
+- Keep the code loosely coupled
+- Improve testability
+- Allow easy replacement of behaviors (e.g., parsing, validation, inclusion rules)
+
+---
+
+### Extensibility by Design
+
+The calculator engine acts as an orchestration layer and is **policy-driven**:
+
+- Operations are injected (`IOperation`)
+- Validation rules are injected (`INumberValidator`)
+- Inclusion rules are injected (`INumberInclusionPolicy`)

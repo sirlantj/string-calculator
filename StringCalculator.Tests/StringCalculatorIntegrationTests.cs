@@ -1,10 +1,15 @@
+using StringCalculator.Core.Contracts;
+
 namespace StringCalculator.Tests;
+
 public class StringCalculatorIntegrationTests : IClassFixture<StringCalculatorTestsFixture>
 {
-    private readonly StringCalculatorEngine _calculator;
-    
+    private readonly StringCalculatorTestsFixture _fixture;
+    private readonly IStringCalculatorEngine _calculator; 
+
     public StringCalculatorIntegrationTests(StringCalculatorTestsFixture fixture)
     {
+        _fixture = fixture;
         _calculator = fixture.Calculator;
     }
 
@@ -14,6 +19,4 @@ public class StringCalculatorIntegrationTests : IClassFixture<StringCalculatorTe
         var result = _calculator.Add("1,2,3");
         Assert.Equal(6, result.Result);
     }
-
-    
 }

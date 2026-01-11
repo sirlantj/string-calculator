@@ -1,13 +1,16 @@
+using StringCalculator.Core.Contracts;
 using StringCalculator.Core.Exceptions;
 
 namespace StringCalculator.Tests;
 
 public class StringCalculatorTests : IClassFixture<StringCalculatorTestsFixture>
 {
-    private readonly StringCalculatorEngine _calculator;
-    
+    private readonly StringCalculatorTestsFixture _fixture;
+    private readonly IStringCalculatorEngine _calculator; 
+
     public StringCalculatorTests(StringCalculatorTestsFixture fixture)
     {
+        _fixture = fixture;
         _calculator = fixture.Calculator;
     }
 
@@ -38,7 +41,7 @@ public class StringCalculatorTests : IClassFixture<StringCalculatorTestsFixture>
     {
         var result = _calculator.Add("1,500");
         Assert.Equal(501, result.Result);
-        Assert.Equal("1+500 = 501", result.Formula);
+        Assert.Equal("1 + 500 = 501", result.Formula);
     }
 
     [Fact]
@@ -46,7 +49,7 @@ public class StringCalculatorTests : IClassFixture<StringCalculatorTestsFixture>
     {
         var result = _calculator.Add("1,2,3,4,5");
         Assert.Equal(15, result.Result);
-        Assert.Equal("1+2+3+4+5 = 15", result.Formula);
+        Assert.Equal("1 + 2 + 3 + 4 + 5 = 15", result.Formula);
     }
 
     [Fact]
@@ -54,7 +57,7 @@ public class StringCalculatorTests : IClassFixture<StringCalculatorTestsFixture>
     {
         var result = _calculator.Add("1,abc,3,xyz,5");
         Assert.Equal(9, result.Result);
-        Assert.Equal("1+0+3+0+5 = 9", result.Formula);
+        Assert.Equal("1 + 0 + 3 + 0 + 5 = 9", result.Formula);
     }
 
     [Fact]
@@ -93,7 +96,7 @@ public class StringCalculatorTests : IClassFixture<StringCalculatorTestsFixture>
     {
         var result = _calculator.Add("1,,2,,,3");
         Assert.Equal(6, result.Result);
-        Assert.Equal("1+0+2+0+0+3 = 6", result.Formula);
+        Assert.Equal("1 + 0 + 2 + 0 + 0 + 3 = 6", result.Formula);
     }
 
     [Fact]
@@ -101,7 +104,7 @@ public class StringCalculatorTests : IClassFixture<StringCalculatorTestsFixture>
     {
         var result = _calculator.Add("1\n2");
         Assert.Equal(3, result.Result);
-        Assert.Equal("1+2 = 3", result.Formula);
+        Assert.Equal("1 + 2 = 3", result.Formula);
     }
 
     [Fact]
@@ -117,7 +120,7 @@ public class StringCalculatorTests : IClassFixture<StringCalculatorTestsFixture>
     {
         var result = _calculator.Add("1\n2\n3\n4");
         Assert.Equal(10, result.Result);
-        Assert.Equal("1+2+3+4 = 10", result.Formula);
+        Assert.Equal("1 + 2 + 3 + 4 = 10", result.Formula);
     }
 
     [Fact]
@@ -125,7 +128,7 @@ public class StringCalculatorTests : IClassFixture<StringCalculatorTestsFixture>
     {
         var result = _calculator.Add("\n1\n\n2\n");
         Assert.Equal(3, result.Result);
-        Assert.Equal("0+1+0+2+0 = 3", result.Formula);
+        Assert.Equal("0 + 1 + 0 + 2 + 0 = 3", result.Formula);
     }
 
     [Fact]
@@ -133,14 +136,14 @@ public class StringCalculatorTests : IClassFixture<StringCalculatorTestsFixture>
     {
         var result = _calculator.Add("1\nabc\n2");
         Assert.Equal(3, result.Result);
-        Assert.Equal("1+0+2 = 3", result.Formula);
+        Assert.Equal("1 + 0 + 2 = 3", result.Formula);
     }
 
     [Fact]
     public void Add_MixedDelimiters_WithEmptyAndInvalid_ReturnsCorrectSum()
     {
         Assert.Equal(10, _calculator.Add("1\nabc,3\n\n4,tytyt\n2").Result);
-        Assert.Equal("1+0+3+0+4+0+2 = 10", _calculator.Add("1\nabc,3\n\n4,tytyt\n2").Formula);
+        Assert.Equal("1 + 0 + 3 + 0 + 4 + 0 + 2 = 10", _calculator.Add("1\nabc,3\n\n4,tytyt\n2").Formula);
     }
 
     [Fact]
@@ -165,7 +168,7 @@ public class StringCalculatorTests : IClassFixture<StringCalculatorTestsFixture>
     {
         var result = _calculator.Add("2,1001,6");
         Assert.Equal(8, result.Result);
-        Assert.Equal("2+6 = 8", result.Formula);
+        Assert.Equal("2 + 6 = 8", result.Formula);
     }
 
     [Fact]
@@ -180,7 +183,7 @@ public class StringCalculatorTests : IClassFixture<StringCalculatorTestsFixture>
     {
         var result = _calculator.Add("1,999,1000,1001,2");
         Assert.Equal(2002, result.Result);
-        Assert.Equal("1+999+1000+2 = 2002", result.Formula);
+        Assert.Equal("1 + 999 + 1000 + 2 = 2002", result.Formula);
     }
 
     [Fact]
@@ -188,7 +191,7 @@ public class StringCalculatorTests : IClassFixture<StringCalculatorTestsFixture>
     {
         var result = _calculator.Add("//#\n2#5");
         Assert.Equal(7, result.Result);
-        Assert.Equal("2+5 = 7", result.Formula);
+        Assert.Equal("2 + 5 = 7", result.Formula);
     }
 
     [Fact]
@@ -196,7 +199,7 @@ public class StringCalculatorTests : IClassFixture<StringCalculatorTestsFixture>
     {
         var result = _calculator.Add("//,\n2,ff,100");
         Assert.Equal(102, result.Result);
-        Assert.Equal("2+0+100 = 102", result.Formula);
+        Assert.Equal("2 + 0 + 100 = 102", result.Formula);
     }
 
     [Fact]
@@ -204,7 +207,7 @@ public class StringCalculatorTests : IClassFixture<StringCalculatorTestsFixture>
     {
         var result = _calculator.Add("//;\n1;2\n3");
         Assert.Equal(6, result.Result);
-        Assert.Equal("1+2+3 = 6", result.Formula);
+        Assert.Equal("1 + 2 + 3 = 6", result.Formula);
     }
 
     [Fact]
@@ -212,7 +215,7 @@ public class StringCalculatorTests : IClassFixture<StringCalculatorTestsFixture>
     {
         var result = _calculator.Add("//[***]\n11***22***33");
         Assert.Equal(66, result.Result);
-        Assert.Equal("11+22+33 = 66", result.Formula);
+        Assert.Equal("11 + 22 + 33 = 66", result.Formula);
     }
 
     [Fact]
@@ -220,7 +223,7 @@ public class StringCalculatorTests : IClassFixture<StringCalculatorTestsFixture>
     {
         var result = _calculator.Add("//[---]\n1---2---3---4---5");
         Assert.Equal(15, result.Result);
-        Assert.Equal("1+2+3+4+5 = 15", result.Formula);
+        Assert.Equal("1 + 2 + 3 + 4 + 5 = 15", result.Formula);
     }
 
     [Fact]
@@ -228,7 +231,7 @@ public class StringCalculatorTests : IClassFixture<StringCalculatorTestsFixture>
     {
         var result = _calculator.Add("//[***]\n2***ff***100");
         Assert.Equal(102, result.Result);
-        Assert.Equal("2+0+100 = 102", result.Formula);
+        Assert.Equal("2 + 0 + 100 = 102", result.Formula);
     }
 
     [Fact]
@@ -236,7 +239,7 @@ public class StringCalculatorTests : IClassFixture<StringCalculatorTestsFixture>
     {
         var result = _calculator.Add("//[***]\n1***2\n3,4");
         Assert.Equal(10, result.Result);
-        Assert.Equal("1+2+3+4 = 10", result.Formula);
+        Assert.Equal("1 + 2 + 3 + 4 = 10", result.Formula);
     }
 
     [Fact]
@@ -262,7 +265,7 @@ public class StringCalculatorTests : IClassFixture<StringCalculatorTestsFixture>
     {
         var result = _calculator.Add("//[*][!!][r9r]\n11r9r22*hh*33!!44");
         Assert.Equal(110, result.Result);
-        Assert.Equal("11+22+0+33+44 = 110", result.Formula);
+        Assert.Equal("11 + 22 + 0 + 33 + 44 = 110", result.Formula);
     }
 
     [Fact]
@@ -270,7 +273,7 @@ public class StringCalculatorTests : IClassFixture<StringCalculatorTestsFixture>
     {
         var result = _calculator.Add("//[***][#]\n1***2#3\n4,5");
         Assert.Equal(15, result.Result);
-        Assert.Equal("1+2+3+4+5 = 15", result.Formula);
+        Assert.Equal("1 + 2 + 3 + 4 + 5 = 15", result.Formula);
     }
 
     [Fact]
@@ -288,7 +291,7 @@ public class StringCalculatorTests : IClassFixture<StringCalculatorTestsFixture>
     {
         var result = _calculator.Add("//[***][%%]\n2***1001%%6");
         Assert.Equal(8, result.Result);
-        Assert.Equal("2+6 = 8", result.Formula);
+        Assert.Equal("2 + 6 = 8", result.Formula);
     }
 
     [Fact]
@@ -296,7 +299,7 @@ public class StringCalculatorTests : IClassFixture<StringCalculatorTestsFixture>
     {
         var result = _calculator.Add("2,,4,rrrr,1001,6");
         Assert.Equal(12, result.Result);
-        Assert.Equal("2+0+4+0+6 = 12", result.Formula);
+        Assert.Equal("2 + 0 + 4 + 0 + 6 = 12", result.Formula);
     }
     
 }

@@ -1,5 +1,8 @@
-public interface IDelimiterParser 
+namespace StringCalculator.Core.Contracts
 {
-    (List<string> delimiters, string numbersPart) Parse(string input);
-    IEnumerable<string> Split(string numbersPart, List<string> delimiters);
+    public interface IDelimiterParser
+    {
+        (IReadOnlyList<string> CustomDelimiters, string NumbersPart) Parse(string input);
+        IEnumerable<string> Split(string numbersPart, IReadOnlyList<string> allDelimiters);
+    }
 }

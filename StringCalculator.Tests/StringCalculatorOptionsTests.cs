@@ -1,3 +1,4 @@
+using StringCalculator.Core.Contracts;
 using StringCalculator.Core.Domain.Operations;
 using StringCalculator.Core.Domain.ValueObjects;
 
@@ -5,10 +6,12 @@ namespace StringCalculator.Tests;
 
 public class StringCalculatorOptionsTests : IClassFixture<StringCalculatorTestsFixture>
 {
-    private readonly StringCalculatorEngine _calculator;
-    
+    private readonly StringCalculatorTestsFixture _fixture;
+    private readonly IStringCalculatorEngine _calculator; 
+
     public StringCalculatorOptionsTests(StringCalculatorTestsFixture fixture)
     {
+        _fixture = fixture;
         _calculator = fixture.Calculator;
     }
 
@@ -18,7 +21,7 @@ public class StringCalculatorOptionsTests : IClassFixture<StringCalculatorTestsF
         var options = new CalculatorOptions { AlternateDelimiter = ';' };
         var result = _calculator.Calculate("1;2;3", new AddOperation(), options);
         Assert.Equal(6, result.Result);
-        Assert.Equal("1+2+3 = 6", result.Formula);
+        Assert.Equal("1 + 2 + 3 = 6", result.Formula);
     }
 
     [Fact]
@@ -27,7 +30,7 @@ public class StringCalculatorOptionsTests : IClassFixture<StringCalculatorTestsF
         var options = new CalculatorOptions { DenyNegatives = false };
         var result = _calculator.Calculate("-1,2,-3", new AddOperation(), options);
         Assert.Equal(-2, result.Result);
-        Assert.Equal("-1+2+-3 = -2", result.Formula);
+        Assert.Equal("-1 + 2 + -3 = -2", result.Formula);
     }
 
     [Fact]
@@ -36,6 +39,6 @@ public class StringCalculatorOptionsTests : IClassFixture<StringCalculatorTestsF
         var options = new CalculatorOptions { UpperBound = 5 };
         var result = _calculator.Calculate("2,6,3", new AddOperation(), options);
         Assert.Equal(5, result.Result);
-        Assert.Equal("2+3 = 5", result.Formula);
+        Assert.Equal("2 + 3 = 5", result.Formula);
     }
 }

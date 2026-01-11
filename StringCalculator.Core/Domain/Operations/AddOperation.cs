@@ -1,3 +1,5 @@
+using StringCalculator.Core.Contracts;
+
 namespace StringCalculator.Core.Domain.Operations;
 public class AddOperation : IOperation {
     public int Execute(IEnumerable<int> numbers) => numbers.Sum();

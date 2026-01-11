@@ -1,3 +1,5 @@
+using StringCalculator.Core.Contracts;
+using StringCalculator.Core.Domain;
 using StringCalculator.Core.Domain.Operations;
 using StringCalculator.Core.Domain.ValueObjects;
 
@@ -5,10 +7,12 @@ namespace StringCalculator.Tests;
 
 public class StringCalculatorOperationsTests : IClassFixture<StringCalculatorTestsFixture>
 {
-    private readonly StringCalculatorEngine _calculator;
-    
+    private readonly StringCalculatorTestsFixture _fixture;
+    private readonly IStringCalculatorEngine _calculator; 
+
     public StringCalculatorOperationsTests(StringCalculatorTestsFixture fixture)
     {
+        _fixture = fixture;
         _calculator = fixture.Calculator;
     }
     private readonly CalculatorOptions _defaultOptions = new();
@@ -18,7 +22,7 @@ public class StringCalculatorOperationsTests : IClassFixture<StringCalculatorTes
     {
         var result = _calculator.Calculate("10,3", new SubOperation(), _defaultOptions);
         Assert.Equal(7, result.Result);
-        Assert.Equal("10-3 = 7", result.Formula);
+        Assert.Equal("10 - 3 = 7", result.Formula);
     }
 
     [Fact]
@@ -26,7 +30,7 @@ public class StringCalculatorOperationsTests : IClassFixture<StringCalculatorTes
     {
         var result = _calculator.Calculate("10,3,2", new SubOperation(), _defaultOptions);
         Assert.Equal(5, result.Result);
-        Assert.Equal("10-3-2 = 5", result.Formula);
+        Assert.Equal("10 - 3 - 2 = 5", result.Formula);
     }
 
     [Fact]
@@ -34,7 +38,7 @@ public class StringCalculatorOperationsTests : IClassFixture<StringCalculatorTes
     {
         var result = _calculator.Calculate("3,4", new MulOperation(), _defaultOptions);
         Assert.Equal(12, result.Result);
-        Assert.Equal("3×4 = 12", result.Formula);
+        Assert.Equal("3 × 4 = 12", result.Formula);
     }
 
     [Theory]
@@ -52,7 +56,7 @@ public class StringCalculatorOperationsTests : IClassFixture<StringCalculatorTes
     {
         var result = _calculator.Calculate("100,5", new DivOperation(), _defaultOptions);
         Assert.Equal(20, result.Result);
-        Assert.Equal("100÷5 = 20", result.Formula);
+        Assert.Equal("100 ÷ 5 = 20", result.Formula);
     }
 
     [Theory]
@@ -88,14 +92,14 @@ public class StringCalculatorOperationsTests : IClassFixture<StringCalculatorTes
     {
         var result = _calculator.Calculate("//[*]\n2*3*4", new MulOperation(), _defaultOptions);
         Assert.Equal(24, result.Result);
-        Assert.Equal("2×3×4 = 24", result.Formula);
+        Assert.Equal("2 × 3 × 4 = 24", result.Formula);
     }
 
     [Fact]
     public void Operations_WithNegativesAndAllowOption_Works()
     {
         var options = new CalculatorOptions { DenyNegatives = false };
-        var result = _calculator.Calculate("-2,3,-1", new MulOperation(), options);
+        var result = _calculator.Calculate(" - 2,3, - 1", new MulOperation(), options);
         Assert.Equal(6, result.Result); 
     }
 }

@@ -1,38 +1,42 @@
 using System.Text.RegularExpressions;
+using StringCalculator.Core.Contracts;
 
-public class DelimiterParser : IDelimiterParser 
+namespace StringCalculator.Core.Domain
 {
-    public (List<string> delimiters, string numbersPart) Parse(string input)
+    public class DelimiterParser : IDelimiterParser
     {
-        var delimiters = new List<string> { ",", "\n" };
-        
-        if (!input.StartsWith("//"))
-            return (delimiters, input);
-
-        var newlineIndex = input.IndexOf('\n');
-        if (newlineIndex == -1)
-            return (delimiters, input);
-
-        var delimiterSection = input.Substring(2, newlineIndex - 2);
-        var numbers = input[(newlineIndex + 1)..];
-
-        var matches = Regex.Matches(delimiterSection, @"\[(.*?)\]");
-        if (matches.Count > 0)
+        public (IReadOnlyList<string> CustomDelimiters, string NumbersPart) Parse(string input)
         {
-            foreach (Match match in matches)
-                delimiters.Add(match.Groups[1].Value);
+            var delimiters = new List<string> { ",", "\n" };
+
+            if (!input.StartsWith("//"))
+                return (delimiters, input);
+
+            var newlineIndex = input.IndexOf('\n');
+            if (newlineIndex == -1)
+                return (delimiters, input);
+
+            var delimiterSection = input.Substring(2, newlineIndex - 2);
+            var numbers = input[(newlineIndex + 1)..];
+
+            var matches = Regex.Matches(delimiterSection, @"\[(.*?)\]");
+            if (matches.Count > 0)
+            {
+                foreach (Match match in matches)
+                    delimiters.Add(match.Groups[1].Value);
+            }
+            else
+            {
+                delimiters.Add(delimiterSection);
+            }
+
+            return (delimiters, numbers);
         }
-        else
+
+        public IEnumerable<string> Split(string numbersPart, IReadOnlyList<string> allDelimiters)
         {
-            delimiters.Add(delimiterSection);
+            var pattern = string.Join("|", allDelimiters.Select(Regex.Escape));
+            return Regex.Split(numbersPart, pattern);
         }
-
-        return (delimiters, numbers);
-    }
-
-    public IEnumerable<string> Split(string numbersPart, List<string> delimiters)
-    {
-        var pattern = string.Join("|", delimiters.Select(Regex.Escape));
-        return Regex.Split(numbersPart, pattern);
     }
 }
